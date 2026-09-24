@@ -19,17 +19,25 @@
     .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px }
     article { overflow:hidden; background:white; border:1px solid #dce4de; border-radius:18px; box-shadow:0 9px 28px #153b3510 }
     .player { background:#081d1b; display:grid; place-items:center; padding:14px }
-    video { display:block; width:min(100%,390px); max-height:70vh; aspect-ratio:9/16; object-fit:contain; background:#081d1b }
+    .video-frame { display:grid; width:min(100%,390px,39.375vh); aspect-ratio:9/16; background:#081d1b }
+    .video-frame video,.play-cover { grid-area:1/1; width:100%; height:100%; min-height:0 }
+    video { display:block; object-fit:contain; background:#081d1b }
+    .play-cover { display:grid; place-items:center; position:relative; z-index:2; padding:0; border:0; background:#081d1b; cursor:pointer }
+    .play-cover img,.play-cover span { grid-area:1/1 }
+    .play-cover img { display:block; width:100%; height:100%; object-fit:contain }
+    .play-cover span { display:grid; place-items:center; width:68px; height:68px; border-radius:50%; background:#103b35e8; color:#fff; font-size:30px; box-shadow:0 0 0 4px #ffffffb8 }
+    .play-cover:hover span { background:#205c50 }
+    .play-cover[hidden] { display:none }
     .copy { padding:20px }
     .meta { color:#b44b11; font-size:.75rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase }
     h2 { font-size:1.45rem; line-height:1.2; margin:7px 0 8px; letter-spacing:-.025em }
     .copy p { margin:0 0 16px; color:#4f625a }
     a.button { display:inline-flex; align-items:center; min-height:45px; background:var(--green); border-radius:10px; color:white; padding:9px 15px; text-decoration:none; font-weight:750 }
     a.button:hover { background:#205c50 }
-    a:focus-visible,video:focus-visible { outline:3px solid var(--orange); outline-offset:3px }
+    a:focus-visible,video:focus-visible,.play-cover:focus-visible { outline:3px solid var(--orange); outline-offset:3px }
     .foot { margin-top:28px; color:var(--muted); font-size:.92rem }
     .foot a { color:var(--green) }
-    @media (max-width:720px) { .grid { grid-template-columns:1fr } video { max-height:72vh } }
+    @media (max-width:720px) { .grid { grid-template-columns:1fr } .video-frame { width:min(100%,390px,40.5vh) } }
   </style>
 </head>
 <body>
@@ -42,15 +50,24 @@
     <p class="notice"><strong>Statut : candidat de revue.</strong> Les chiffres et visuels de produits doivent être validés avec Woodeex avant utilisation commerciale. David doit écouter les voix et approuver la création avant tout envoi au client.</p>
     <div class="grid">
       <article>
-        <div class="player"><video controls playsinline preload="metadata" poster="fiancailles-poster-v13.jpg" aria-label="Lire le pilote fiançailles révisé"><source src="videos/fiancailles-v13.mp4" type="video/mp4">Votre navigateur ne peut pas lire cette vidéo.</video></div>
+        <div class="player"><div class="video-frame"><video controls playsinline preload="metadata" poster="fiancailles-poster-v13.jpg" aria-label="Lire le pilote fiançailles révisé"><source src="videos/fiancailles-v13.mp4" type="video/mp4">Votre navigateur ne peut pas lire cette vidéo.</video><button class="play-cover" type="button" aria-label="Lancer la vidéo fiançailles"><img src="fiancailles-poster-v13.jpg" alt=""><span aria-hidden="true">▶</span></button></div></div>
         <div class="copy"><div class="meta">Pilote 02 · 52 s · V13</div><h2>Fiançailles : « Bref » à deux voix</h2><p>Le futur fiancé cherche, demande conseil à son ami, découvre le prix puis raconte la réception de la bague. Coupes courtes, cartons de prix et sous-titres synchronisés.</p><a class="button" href="videos/fiancailles-v13.mp4" download>Télécharger le MP4</a></div>
       </article>
       <article>
-        <div class="player"><video controls playsinline preload="metadata" poster="expert-poster.jpg" aria-label="Lire le pilote expert révisé"><source src="videos/expert-v16.mp4" type="video/mp4">Votre navigateur ne peut pas lire cette vidéo.</video></div>
+        <div class="player"><div class="video-frame"><video controls playsinline preload="metadata" poster="expert-poster.jpg" aria-label="Lire le pilote expert révisé"><source src="videos/expert-v16.mp4" type="video/mp4">Votre navigateur ne peut pas lire cette vidéo.</video><button class="play-cover" type="button" aria-label="Lancer la vidéo expert"><img src="expert-poster.jpg" alt=""><span aria-hidden="true">▶</span></button></div></div>
         <div class="copy"><div class="meta">Pilote 01 · 2 min 23 · V16</div><h2>Diamant naturel ou laboratoire ?</h2><p>Le texte long du client, dans son ordre, avec un expert face caméra. Voix unique, coupes plus vives et huit visuels issus des références fournies par Woodeex.</p><a class="button" href="videos/expert-v16.mp4" download>Télécharger le MP4</a></div>
       </article>
     </div>
     <p class="foot">Les <a href="https://woodeex-watch-2409.vercel.app/">versions précédentes</a> restent accessibles pour comparer. Aucun de ces pilotes n’a été envoyé au client.</p>
   </main>
+  <script>
+    document.querySelectorAll('.play-cover').forEach(button => {
+      button.addEventListener('click', async () => {
+        const video = button.previousElementSibling;
+        button.hidden = true;
+        try { await video.play(); } catch (_) { video.focus(); }
+      });
+    });
+  </script>
 </body>
 </html>
